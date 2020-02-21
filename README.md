@@ -68,7 +68,7 @@ All attributes must strictly be in alphabetical order.
 <!-- good -->
 <input placeholder="Username" size="10" type="text" value="foo" />
 
-<!-- good -->
+<!-- bad -->
 <input type="text" placeholder="Username" value="foo" size="10" />
 ```
 
