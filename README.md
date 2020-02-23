@@ -295,6 +295,8 @@ let number = 5;
 
 Use arrow functions where possible. Use the `function` keyword only when you need the `this` value.
 
+**Why?** Arrow functions are shorter and give a more intuitive understanding of `this`. `this` should be reserved for use in specific situations instead of having every function have its own "accidental" `this` value.
+
 ```js
 // good
 const add = (num1, num2) => num1 + num2;
