@@ -16,6 +16,12 @@ Having a consistent coding style across your projects is one of the easiest ways
 
 **No tabs.** Instead, tabs should be remapped to insert two spaces. Tabs are not consistently rendered across programs and operating systems, sometimes having a width of 4, and sometimes even a width of 8, which is why using spaces that appear like tabs works best.
 
+### Quotes
+
+**Use double quotes.**
+
+**Are there situations in which using single quotes is appropriate?** Yes, absolutely. See below under the [JavaScript](#javascript) heading for more information.
+
 ## HTML
 
 ### Tags
@@ -230,3 +236,196 @@ If you are using a vendor prefix without the "normal" version of the declaration
   -webkit-text-fill-color: transparent;  /* "text" after "back" */
 }
 ```
+
+### Miscellaneous
+
+**Try not to use `!important`.** `!important` is needed in only a very small percentage of use cases. In most other cases, simply reordering your CSS declarations can do the trick. CSS declarations of the same specificity level are applied in a top-down fashion, so if you want a style to take precedence, simply try moving it further down instead of using `!important`.
+
+**Try not to use `z-index`.** Instead of using `z-index`, in the large majority of cases you can simply reorder elements. For example:
+
+```html
+<style>
+  .square {
+    position: absolute;
+  }
+</style>
+
+<div class="square">square 1</div>
+<div class="square">square 2</div>
+<div class="square">square 3</div>
+<div class="square">square 4</div>
+```
+
+Square 4 will naturally be on top of Square 3, which will be on top of Square 2, and so on.
+
+## JavaScript
+
+### Variables
+
+**Never use `var`.** This ensures that you can’t reassign your references, which can lead to bugs and difficult to comprehend code.
+
+```js
+// good
+const number = 5;
+
+// bad
+var number = 5;
+```
+
+**Use `let` only where absolutely necessary.** Just like with `var`, this prevents unnecessary assignments.
+
+```js
+// good
+const number = 5;
+let someComplexValue;
+if (condition) {
+  doSomething();
+  doSomethingElse();
+  someComplexValue = doAnotherThing();
+} else {
+  doSomethingElse();
+  someComplexValue = doSomething();
+}
+
+// bad
+let number = 5;
+```
+
+### Functions
+
+Use arrow functions where possible. Use the `function` keyword only when you need the `this` value.
+
+```js
+// good
+const add = (num1, num2) => num1 + num2;
+
+const handleSubmit = async ({ name }) => {
+  const result = await addUser({ variables: { name }});
+  return result.data;
+}
+
+input.addEventListener("keydown", function (evt) { 
+  evt.preventDefault();
+
+  alert(`Hello ${this.value}!`);
+});
+
+// bad
+function add(num1, num2) {
+  return nume + num2;
+}
+
+async function handleSubmit({ name }) {
+  const result = await addUser({ variables: { name }});
+  return result.data;
+}
+```
+
+### Quotes
+
+Use double quotes `""` for strings.
+
+```js
+// good
+const message = "Hello!";
+
+// bad
+const message = 'Hello!';
+```
+
+However, if you wish to embed double quotes in your string, you can use single quotes or backticks - avoid escaping where possible.
+
+```js
+// good
+const message = 'And then he said "Hello", like a maniac!';
+const message = `And then he said "Hello", like a maniac!`;
+
+// bad
+const message = "And then he said \"Hello\", like a maniac!";
+```
+
+Use backticks whenever you need to interpolate a value into your string.
+
+```js
+// bad
+console.log("How are you, " + name + "?");
+console.log(["How are you, ", name, "?"].join());
+
+// good
+console.log(`How are you, ${name}?`);
+```
+
+### Spacing
+
+Put one new line before and after every function in your code (unless there's no code before/after it).
+
+```js
+// good
+function func1() {
+  // something
+}
+
+function func2() {
+  // something else
+}
+
+// bad
+function func1() {
+  // something
+}
+function func2() {
+  // something else
+}
+```
+
+Put one new line before and after every method and property in your class (unless it's at the start/end of your class).
+
+```js
+// good
+class Form extends Component {
+  state = { a: 1, b: 2 };
+
+  handleChange = () => {
+    // ...
+  }
+
+  render() {
+    // ...
+  }
+}
+
+// bad
+class Form extends Component {
+  state = { a: 1, b: 2 };
+  handleChange = () => {
+    // ...
+  }
+  render() {
+    // ...
+  }
+}
+```
+
+### Loops
+
+Try not to use `for` loops where possible.
+
+Instead, consider using Array iteration methods, e.g. `Array.prototype.forEach` or `Array.prototype.map`.
+
+```js
+const names = ["Aaron", "Amanda", "Arthur"];
+
+// good
+names.forEach(name => {
+  console.log(name);
+})
+
+const namesInCaps = names.map(name => name.toUpperCase());
+
+// bad
+for (let i = 0; i < names.length; i++) {
+  console.log(name);  
+}
+```
+
+However, there are some cases in which you will need to use `for` loops. In such cases, you should use a proper counter name (not `i`).
