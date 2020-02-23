@@ -1,14 +1,38 @@
+<!-- omit in toc -->
 # Better Coding Academy Style Guide
 
+<!-- omit in toc -->
 ## What is this?
 
 This is a non-exhaustive set of coding principles you are expected to follow whilst studying at Better Coding Academy.
 
 I personally follow this style guide for all production code that I write, so feel free to use it / extend from it in any of your production projects as well.
 
+<!-- omit in toc -->
 ## Why use a style guide?
 
 Having a consistent coding style across your projects is one of the easiest ways to keep coding quality and interoperability high. Learning to be consistent and follow the style guide of a company (hopefully they have one) pays handsome dividends.
+
+<!-- omit in toc -->
+## Table of Contents
+
+- [General Rules](#general-rules)
+  - [Indentation](#indentation)
+  - [Quotes](#quotes)
+- [HTML](#html)
+  - [Tags](#tags)
+  - [Attributes](#attributes)
+- [CSS](#css)
+  - [Selectors](#selectors)
+  - [Declaration Blocks](#declaration-blocks)
+  - [Declarations](#declarations)
+  - [Miscellaneous](#miscellaneous)
+- [JavaScript](#javascript)
+  - [Variables](#variables)
+  - [Functions](#functions)
+  - [Quotes](#quotes-1)
+  - [Spacing](#spacing)
+  - [Loops](#loops)
 
 ## General Rules
 
