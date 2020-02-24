@@ -19,6 +19,8 @@ Having a consistent coding style across your projects is one of the easiest ways
 - [General Rules](#general-rules)
   - [Indentation](#indentation)
   - [Quotes](#quotes)
+  - [Editor](#editor)
+  - [Formatter](#formatter)
 - [HTML](#html)
   - [Tags](#tags)
   - [Attributes](#attributes)
@@ -29,6 +31,7 @@ Having a consistent coding style across your projects is one of the easiest ways
   - [Miscellaneous](#miscellaneous)
 - [JavaScript](#javascript)
   - [Variables](#variables)
+  - [Objects](#objects)
   - [Functions](#functions)
   - [Quotes](#quotes-1)
   - [Spacing](#spacing)
@@ -45,6 +48,21 @@ Having a consistent coding style across your projects is one of the easiest ways
 **Use double quotes.**
 
 **Are there situations in which using single quotes is appropriate?** Yes, absolutely. See below under the [JavaScript](#javascript) heading for more information.
+
+### Editor
+
+It is suggested that you use VSCode for writing code.
+
+**Why?** Well, as a non-exhaustive list, VSCode:
+
+1. Supports a multiitude of extensions;
+2. Has great customisability and extensibility;
+3. Supports WSL (Windows Subsystem for Linux); and
+4. Is faster than Atom (which used to be my editor of choice).
+
+### Formatter
+
+The use of [Prettier](https://prettier.io/) is **highly recommended**, as it would help automatically enforce a number of the rules presented within this document.
 
 ## HTML
 
@@ -315,6 +333,75 @@ if (condition) {
 let number = 5;
 ```
 
+### Objects
+
+All object properties must be in alphabetical order.
+
+```js
+// good
+const bill = {
+  age: 25,
+  email: "bill@example.com",
+  name: "Bill"
+}
+
+// bad
+const bill = {
+  name: "Bill",
+  age: 25,
+  email: "bill@example.com"
+};
+```
+
+**Why?** It doesn't make much of a difference for smaller objects; however, when you end up with more properties, such as in the following example:
+
+```js
+const options = {
+  autoFocus: true,
+  disabled: isSubmitting && isValid,
+  displaySize: "lg",
+  id: generateId("email"),
+  name: "email",
+  placeholder: "e.g. lucas@example.com",
+  type: "text"
+};
+```
+
+Assuming you know your alphabet, locating a property is simply a matter of binary search, i.e. O(log n). However, if we were to let the programmer do "whatever order feels right for them at the time", then we would get something like:
+
+```js
+const options = {
+  id: generateId("email"),
+  name: "email",
+  displaySize: "lg",
+  type: "text",
+  placeholder: "e.g. lucas@example.com",
+  autoFocus: true,
+  disabled: isSubmitting && isValid
+};
+```
+
+As it becomes harder to read, some programmers would then start adding pointless new lines, grouping once again "as they see fit":
+
+```js
+const options = {
+  // no one
+  id: generateId("email"),
+  name: "email",
+
+  // has any idea
+  displaySize: "lg",
+  type: "text",
+
+  // why these are grouped like this
+  placeholder: "e.g. lucas@example.com",
+  autoFocus: true,
+  disabled: isSubmitting && isValid
+};
+```
+
+So yeah, no good. Finding a property in an unordered object is O(n), an order of magnitude worse than O(log n).
+
 ### Functions
 
 Use arrow functions where possible. Use the `function` keyword only when you need the `this` value.
@@ -346,6 +433,125 @@ async function handleSubmit({ name }) {
   return result.data;
 }
 ```
+
+When definining the parameters of a function/method, **one object parameter is generally preferable to multiple arguments**.
+
+For example, instead of this:
+
+```js
+// bad
+class User {
+  constructor(id, name, email, address) {
+    this.id = id;
+    this.name = name;
+    this.email = email;
+    this.address = address;
+  }
+}
+```
+
+Do this:
+
+```js
+// good
+class User {
+  constructor({ address, email, id, name }) {
+    this.id = id;
+    this.name = name;
+    this.email = email;
+    this.address = address;
+  }
+}
+```
+
+This has three main benefits:
+
+1. **It easily allows for properties to be optional.** Imagine if `email` were to be optional; creating an object using the first syntax would look like:
+
+    ```js
+    new User(1, "Lucas", undefined, "1 Main St.");
+    ```
+
+    However, for the second one it would simply be:
+
+    ```js
+    new User({
+      address: "1 Main St.",
+      // notice how we leave out email entirely
+      id: 1,
+      name: "Lucas"
+    });
+    ```
+
+2. **It removes the ambiguity of ordering.** In the first example, there is no real reason to use the order `id, name, email, address` as opposed to, say, `id, name, address, email`, or any other combination really. When using an object and destructuring it, it is easier than remembering an arbitrary order.
+3. **It gives each "argument" a name.** Obviously in the second example we only have one argument (an object); however, each one of those properties has a name, which adds incredible semantics into your funciton. Look at the difference between these two:
+
+    ```php
+    // actual PHP code... yikes
+    $canvas = imagecreatetruecolor(200, 200);
+
+    // yikes
+    $pink = imagecolorallocate($canvas, 255, 105, 180);
+    $white = imagecolorallocate($canvas, 255, 255, 255);
+    $green = imagecolorallocate($canvas, 132, 135, 28);
+
+    // yikes
+    imagerectangle($canvas, 50, 50, 150, 150, $pink);
+    imagerectangle($canvas, 45, 60, 120, 100, $white);
+    imagerectangle($canvas, 100, 120, 75, 160, $green);
+    ```
+
+    Using what we've just learned, what if we rewrite this a little?
+
+    ```js
+    const canvas = imageCreateTrueColor({ height: 200, width: 200 });
+
+    const pink = imageColorAllocate({
+      blue: 180,
+      canvas,
+      green: 105,
+      red: 255
+    });
+    const white = imageColorAllocate({
+      blue: 255,
+      canvas,
+      green: 255,
+      red: 255
+    });
+    const green = imageColorAllocate({
+      blue: 28,
+      canvas,
+      green: 135,
+      red: 132
+    });
+
+    imageRectangle({
+      canvas,
+      color: pink,
+      x1: 50,
+      x2: 150,
+      y1: 50,
+      y2: 150
+    });
+    imageRectangle({
+      canvas,
+      color: white,
+      x1: 45,
+      x2: 120,
+      y1: 60,
+      y2: 100
+    });
+    imageRectangle({
+      canvas,
+      color: green,
+      x1: 100,
+      x2: 75,
+      y1: 120,
+      y2: 160
+    });
+    ```
+
+    Yes, it is longer; however, look at all the additional information that is now available. No need to remember the order of parameters, and that is a huge deal. It might take 20% longer to type the first time round, but each time a change is made, the reduction in amiguity will save much more than the original 20% cost.
 
 ### Quotes
 
