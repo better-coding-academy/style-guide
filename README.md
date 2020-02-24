@@ -640,9 +640,11 @@ class Form extends Component {
 
 ### Loops
 
-Try not to use `for` loops where possible.
+Try not to use `for` loops where possible. Instead, consider using Array iteration methods, e.g. `Array.prototype.forEach` or `Array.prototype.map`.
 
-Instead, consider using Array iteration methods, e.g. `Array.prototype.forEach` or `Array.prototype.map`.
+**Why?** Specificity and clarity. When you see a `.map` method, assuming no crazy stuff is going on, you know that a new array is being generated from an existing array. When you see a `.forEach` method, you know that it is iterating thorugh properties, and so on and so forth for `.reduce`, `.some`, `.every`, etc. - every single method is clearly defined for a particular purpose.
+
+However when you see a `for` loop, there is no guarantee for what is going to happen, and in many cases, when it tries to do more than one thing, the loop quickly becomes overcomplicated and poorly designed.
 
 ```js
 const names = ["Aaron", "Amanda", "Arthur"];
