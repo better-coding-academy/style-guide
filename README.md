@@ -36,6 +36,7 @@ Having a consistent coding style across your projects is one of the easiest ways
   - [Quotes](#quotes-1)
   - [Spacing](#spacing)
   - [Loops](#loops)
+  - [Switch Statements](#switch-statements)
   - [DOM Operations](#dom-operations)
 
 ## General Rules
@@ -664,6 +665,73 @@ for (let i = 0; i < names.length; i++) {
 ```
 
 However, there are some cases in which you will need to use `for` loops. In such cases, you should use a proper counter name (not `i`) where possible. However, using a generic name like `i` is okay if you are only repeating something a certain number of times, and do not plan to use the index for any purposes.
+
+### Switch Statements
+
+Try to use `switch` statements as little as possible.
+
+**Why?** They're essentially `if` statements that sacrifice flexibility for a little bit more minimalism (and even that is debatable).
+
+For example, look at the following code:
+
+```js
+const status = "GO";
+switch (status) {
+  case "GO":
+    console.log("Let's go!");
+    break;
+  case "STOP":
+    console.log("Time to stop!");
+    break;
+}
+```
+
+And its equivalent using `if` statements:
+
+```js
+const status = "GO";
+if (status === "GO") {
+  console.log("Let's go!");
+} else if (status === "STOP") {
+  console.log("Time to stop!");
+}
+```
+
+I mean... it's 3 lines shorter - I guess the only thing is that `status` is not repeated. However, going back to the `switch` statement, what if you want to have some more granular control?
+
+```js
+const status = "GO";
+const car = "RACECAR";
+switch (status) {
+  case "GO":
+    console.log("Let's go!");
+    break;
+  case "STOP":
+    // yikes
+    if (car === "RACECAR") {
+      console.log("Let's GO!");
+    } else {
+      console.log("Time to stop!");
+    }
+    break;
+}
+```
+
+Compared to if we were using `if` statements:
+
+```js
+const status = "GO";
+const car = "RACECAR";
+if (status === "GO") {
+  console.log("Let's go!");
+} else if (status === "STOP" && car === "RACECAR") {
+  console.log("Let's GO!");
+} else if (status === "STOP") {
+  console.log("Time to stop!");
+}
+```
+
+**Are there cases in which using a switch statement is appropriate?** Sure! Well, maybe... I don't know. At the lowest level it's a matter of personal preference; however, hopefully you can see why I do not advocate its widespread use.
 
 ### DOM Operations
 
