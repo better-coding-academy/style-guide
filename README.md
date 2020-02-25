@@ -694,3 +694,5 @@ for (let i = 0; i < 100; i++) {
 }
 preTag.innerText = preTagContents; // and write it into the DOM! (a single DOM update operation)
 ```
+
+[Check out this JSPerf test to run both of these snippets on your own computer.](https://jsperf.com/dom-access-speed/1)
