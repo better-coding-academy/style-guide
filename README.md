@@ -36,6 +36,7 @@ Having a consistent coding style across your projects is one of the easiest ways
   - [Quotes](#quotes-1)
   - [Spacing](#spacing)
   - [Loops](#loops)
+  - [DOM Operations](#dom-operations)
 
 ## General Rules
 
@@ -662,4 +663,34 @@ for (let i = 0; i < names.length; i++) {
 }
 ```
 
-However, there are some cases in which you will need to use `for` loops. In such cases, you should use a proper counter name (not `i`).
+However, there are some cases in which you will need to use `for` loops. In such cases, you should use a proper counter name (not `i`) where possible. However, using a generic name like `i` is okay if you are only repeating something a certain number of times, and do not plan to use the index for any purposes.
+
+### DOM Operations
+
+Try to update the DOM as little as possible.
+
+**Why?** Updating the DOM is "slow". Slow, as in relatively slow compared to updating internal JavaScript variables. In other words:
+
+```js
+someHTMLElement.innerText = "Hello"; // this
+someVariable = "Hello";              // is slower than this
+```
+
+Compare the following two bits of code that do essentially the same thing:
+
+```js
+const preTag = document.createElement("pre");
+document.body.appendChild(preTag);
+
+// bad
+for (let i = 0; i < 100; i++) {
+  preTag.innerText += `${Math.random()}\n`; // in total, 100 DOM update operations
+}
+
+// good
+let preTagContents = preTag.innerText; // store the value (DOM access operation)
+for (let i = 0; i < 100; i++) {
+  preTagContents += `${Math.random()}\n`; // update the variable - much faster...
+}
+preTag.innerText = preTagContents; // and write it into the DOM! (a single DOM update operation)
+```
