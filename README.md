@@ -30,6 +30,7 @@ Having a consistent coding style across your projects is one of the easiest ways
   - [Declarations](#declarations)
   - [Miscellaneous](#miscellaneous)
 - [JavaScript](#javascript)
+  - [Semicolons](#semicolons)
   - [Variables](#variables)
   - [Objects](#objects)
   - [Functions](#functions)
@@ -302,7 +303,33 @@ If you are using a vendor prefix without the "normal" version of the declaration
 
 Square 4 will naturally be on top of Square 3, which will be on top of Square 2, and so on.
 
+**Try not to use inline styles.** Unless applied using JavaScript for dynamic property values (e.g. `transform`, `left`, `top`, etc.), there's probably no good reason to use inline styles.
+
+**But if I don't use inline styles, then the styles don't work!** That's a specificity issue. You probably have other styles applied at too high a specificity (e.g. using `!important`, which is a no-no as well 😉) overriding your normal styles. In this case, inline styles is like a band-aid over a stab wound - you need to dig deeper and investigate further to find the true source of the issue.
+
 ## JavaScript
+
+### Semicolons
+
+Wherever semicolons are optional, they should be included.
+
+**Why?** Not having semicolons makes the code very trippy. For example, the following:
+
+```js
+// bad
+function returnThree() {
+  return
+    3;
+}
+```
+
+Returns:
+
+```js
+returnThree(); // undefined????
+```
+
+This is because JavaScript uses a set of rules called [Automatic Semicolon Insertion](https://tc39.github.io/ecma262/#sec-automatic-semicolon-insertion) to determine whether or not it should regard that line break as the end of a statement, and it decides where it wants to place semicolons into your code. As can be seen from the example above, ASI can definitely be somewhat counter-intuitive; hence why we recommend to explicitly terminate your statements and configure your linter to catch missing semicolons.
 
 ### Variables
 
@@ -336,6 +363,28 @@ let number = 5;
 ```
 
 ### Objects
+
+Objects must have a curly brace on the first line, and either all properties on the same line, or one property on each line after the curly brace.
+
+```js
+// good
+const factory = { name: "Willy Wonka" };
+const person = {
+  age: "unknown",
+  name: "Willy Wonka",
+  occupation: "chocolatier"
+};
+
+// bad
+const factory = 
+{
+  name: "Wonka Willy"
+};
+const person = {
+  age: "unknown", name: "Wonka Willy",
+  occupation: "choco-late more like vanilla-early"
+};
+```
 
 All object properties must be in alphabetical order.
 
