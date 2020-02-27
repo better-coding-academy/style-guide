@@ -813,3 +813,28 @@ preTag.innerText = preTagContents; // and write it into the DOM! (a single DOM u
 ```
 
 [Check out this JSPerf test to run both of these snippets on your own computer.](https://jsperf.com/dom-access-speed/1)
+
+**Do not read style properties to determine information about your page.** Take a look at the following code, designed to increase the font size of an element by 1px:
+
+```js
+// headingEl already exists
+
+// bad
+headingEl.style.fontSize = `${parseInt(headingEl.style.fontSize) + 1}px`;
+```
+
+**Why?** Disregarding whether this works or not (and in some cases it won't work) this is an anti-pattern because we're depending on data that is stored within the DOM.
+
+Instead, do something like:
+
+```js
+// headingEl already exists
+
+const DEFAULT_HEADING_FONT_SIZE = 16;
+let headingFontSize = DEFAULT_HEADING_FONT_SIZE; // pre-set this
+
+// good
+headingEl.style.fontSize = `${++headingFontSize}px`; // adds 1 and then inlines it
+```
+
+This way our `headingFontSize` variable (i.e. our JavaScript) is the source of truth for the data - much cleaner, no `parseInt` required.
