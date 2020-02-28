@@ -39,6 +39,7 @@ Having a consistent coding style across your projects is one of the easiest ways
   - [Loops](#loops)
   - [Switch Statements](#switch-statements)
   - [DOM Operations](#dom-operations)
+  - [Miscellaneous](#miscellaneous-1)
 
 ## General Rules
 
@@ -823,7 +824,7 @@ preTag.innerText = preTagContents; // and write it into the DOM! (a single DOM u
 headingEl.style.fontSize = `${parseInt(headingEl.style.fontSize) + 1}px`;
 ```
 
-**Why?** Disregarding whether this works or not (and in some cases it won't work) this is an anti-pattern because we're depending on data that is stored within the DOM.
+**Why?** Disregarding whether this works or not (and in some't cases it won't work) this is an anti-pattern because we're depending on data that is stored within the DOM.
 
 Instead, do something like:
 
@@ -838,3 +839,64 @@ headingEl.style.fontSize = `${++headingFontSize}px`; // adds 1 and then inlines 
 ```
 
 This way our `headingFontSize` variable (i.e. our JavaScript) is the source of truth for the data - much cleaner, no `parseInt` required.
+
+### Miscellaneous
+
+**Avoid magic numbers.** Magic numbers are unique values with unexplained meaning or multiple occurrences which could (preferably) be replaced with one or more named constants.
+
+Let's look at the following example:
+
+```js
+const square = document.createElement("div");
+square.style.width = "100px";
+square.style.height = "100px";
+square.style.position = "absolute";
+square.style.left = "100px";
+square.style.top = "100px";
+```
+
+In the above, the `100px` shown on the four lines are the magic numbers. Specifically, they refer to values whose origins are unclear, and are not clearly explained.
+
+You might not be able to see why the above example is bad; however, what if we continued using this `square`?
+
+```js
+// some sort of collision detection...
+const squareRect = square.getBoundingClientRect();
+if (
+  squareRect.left <= collisionRect.left &&
+  squareRect.left + 100 >= collisionRect.left &&
+  squareRect.top <= collisionRect.top &&
+  squareRect.top + 100 >= collisionRect.top
+) {
+  // etc...
+}
+```
+
+All of a sudden the number `100` starts appearing all over your code, and for no real reason! Changing it in any location will break something, but the longer you leave it there, the less clear its purpose becomes.
+
+Instead, stem it from the beginning with a variable:
+
+```js
+const SQUARE_SIZE = 100;
+const SQUARE_DEFAULT_LEFT = 100;
+const SQUARE_DEFAULT_TOP = 100;
+
+const square = document.createElement("div");
+square.style.width = `${SQUARE_SIZE}px`;
+square.style.height = `${SQUARE_SIZE}px`;
+square.style.position = "absolute";
+square.style.left = `${SQUARE_DEFAULT_LEFT}px`;
+square.style.top = `${SQUARE_DEFAULT_TOP}px`;
+```
+
+Notice the UPPER_SNAKE_CASING that we use for these constants. Because they're values that are pre-defined by the programmer and hence cannot be customised, we use this casing.
+
+Notice how we used a different constant for `left` and for `top`. This is to prevent confusion as to why the left and top values are being set to the square size. If you wish the left and top values to be related to the square size, you could do:
+
+```js
+const SQUARE_SIZE = 100;
+const SQUARE_DEFAULT_LEFT = SQUARE_SIZE;
+const SQUARE_DEFAULT_TOP = SQUARE_SIZE;
+```
+
+This is a good compromise to semantically show that `SQUARE_DEFAULT_LEFT` and `SQUARE_DEFAULT_TOP` are both based off `SQUARE_SIZE`.
