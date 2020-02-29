@@ -605,6 +605,52 @@ This has three main benefits:
 
     Yes, it is longer; however, look at all the additional information that is now available. No need to remember the order of parameters, and that is a huge deal. It might take 20% longer to type the first time round, but each time a change is made, the reduction in amiguity will save much more than the original 20% cost.
 
+**Do not mutate function arguments.** Instead, if the argument is a primitive, consider storing its value in a new object; if the argument is an object (including arrays), consider spreading it or otherwise creating a new copy.
+
+```js
+// bad
+const magickFruits = numFruits => {
+  numFruits *= 2;
+  
+  // etc.
+}
+
+// good
+const magickFruits = numFruits => {
+  let newNumFruits = numFruits * 2;
+
+  // etc.
+}
+```
+
+**Why?** If the argument is a primitive, once you change its value, you no longer have access to the original value within the scope of the function. Any code that you write later on in the function that might rely on the argument will now no longer be able to access the original value. If the argument is an object, you are mutating its original value, which introduces side effects into the rest of your code - and is even worse. For example:
+
+```js
+// bad
+const append1 = array => {
+  array.push(1);
+  return [...array];
+}
+
+const arr = [1, 2, 3, 4, 5];
+const newArr = append1(arr);
+
+arr; // [1, 2, 3, 4, 5, 6]
+newArr; // [1, 2, 3, 4, 5, 6]
+
+// good
+const append1 = array => {
+  const newArray = [...array, 1];
+  return newArray;
+}
+
+const arr = [1, 2, 3, 4, 5];
+const newArr = append1(arr);
+
+arr; // [1, 2, 3, 4, 5]
+newArr; // [1, 2, 3, 4, 5, 6]
+```
+
 ### Quotes
 
 Use double quotes `""` for strings.
