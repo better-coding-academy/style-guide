@@ -886,6 +886,28 @@ headingEl.style.fontSize = `${++headingFontSize}px`; // adds 1 and then inlines 
 
 This way our `headingFontSize` variable (i.e. our JavaScript) is the source of truth for the data - much cleaner, no `parseInt` required.
 
+**Do not store data on the DOM.** Instead, store your data inside your JavaScript code, whether that is in the form of single variables, objects, arrays, etc.
+
+**Why?** The DOM the presentational layer, not the data layer. Storing data on the DOM only to be accessed by your own JavaScript code results in a new **source of truth** (i.e. the DOM, where the data is stored). This only leads to issues further down the track.
+
+```js
+/* bad */
+someElement.isValid = false;
+
+// later on in the code...
+if (!someElement.isValid) {
+  // ...
+}
+
+/* good */
+let isSomeElementValid = false;
+
+// later on in the code
+if (!isSomeElementValid) {
+  // ...
+}
+```
+
 ### Miscellaneous
 
 **Avoid magic numbers.** Magic numbers are unique values with unexplained meaning or multiple occurrences which could (preferably) be replaced with one or more named constants.
