@@ -40,6 +40,9 @@ Having a consistent coding style across your projects is one of the easiest ways
   - [Switch Statements](#switch-statements)
   - [DOM Operations](#dom-operations)
   - [Miscellaneous](#miscellaneous-1)
+- [React](#react)
+  - [Component Types](#component-types)
+- [Performance](#performance)
 
 ## General Rules
 
@@ -968,3 +971,65 @@ const SQUARE_DEFAULT_TOP = SQUARE_SIZE;
 ```
 
 This is a good compromise to semantically show that `SQUARE_DEFAULT_LEFT` and `SQUARE_DEFAULT_TOP` are both based off `SQUARE_SIZE`.
+
+## React
+
+### Component Types
+
+**Use function-based components wherever possible, and class-based components only when absolutely necessary.** "Absolutely necessary" includes, as a very limited list:
+
+1. [Error boundaries that use `componentDidCatch`](https://reactjs.org/docs/error-boundaries.html); and
+2. Components that **need** a class-based structure to work properly / be properly optimised. Expanding upon this, this does **not** mean that you get to arbitrarily decide when to use class-based components based on a "gut feeling" - you **must** look at hard data for evidence that using a class-based component provides a statistically significant optimisation benefit. See [Performance](#performance) below.
+
+## Performance
+
+> “Premature optimization is the root of all evil." – Donald Knuth
+
+What does this mean? Well, imagine you have a section of code like this:
+
+```jsx
+// good, not bad... but read on
+const MyComponent = () => {
+  useSomeHook();
+
+  const handleClick = () => {
+    alert("hello!");
+  }
+
+  return <button onClick={handleClick}>Click Me</button>;
+};
+```
+
+You render this component onto your page, and everything is working fine.
+
+However, you recently read an article published by an internet stranger, saying that this type of code is bad as `handleClick` gets re-defined every time `MyComponent` is run, which is bad for performance.
+
+So, to get around this issue you decide to refactor this into a class-based component:
+
+```jsx
+// uh...
+class MyComponent extends Component {
+  handleClick = () => {
+    alert("hello!");
+  }
+
+  render() {
+    useSomeHook(); // uh oh...
+    return <button onClick={this.handleClick}>Click Me</button>;
+  }
+}
+```
+
+OH wait... `useSomeHook` doesn't work anymore - we need to use functional components for that to work! Guess we'll have to rewrite that hook as well.
+
+So now, because you tried to prematurely optimise `MyComponent`, not only have you introduced a class-based component, but you've also introduced a second, non-hook-based copy of `useSomeHook`, just so that you can get "performance benefits". However, instead of getting "performance benefits", you simply reduced your own efficiency as a developer.
+
+**What happened?** Well, you didn't ask yourself the following questions:
+
+1. **Is my code slow?** Yep. Is my code actually slow? Not like, "this seems bad so I'll change it" slow - is there a noticeable performance hit on my page?
+2. **Is this section of code causing the performance hit?** In some cases it might be other sections of code. Unless you've done your research, it's very hard to tell. In the above example, we did not collect evidence showing that the `handleClick` method of `MyComponent` was causing a noticeable performance hit.
+3. **Are the changes I'm proposing going to fix or mitigate the performance issue?** In the above example, we did not collect evidence showing that the use of a class-based component will noticeably increase the speed of `MyComponent` compared to a functional component.
+
+Before you optimise yourself down a rabbit hole, always ask yourself the above questions, and make sure that you have good reasons to perform the optimisations you are about to do.
+
+**So, does that mean we should never optimise?** No, of course not! Optimisation is very important; however, optimisation without data is just over-complication, and that is certainly not a good thing.
