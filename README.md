@@ -39,6 +39,7 @@ Having a consistent coding style across your projects is one of the easiest ways
   - [Loops](#loops)
   - [Switch Statements](#switch-statements)
   - [DOM Operations](#dom-operations)
+  - [Comments](#comments)
   - [Miscellaneous](#miscellaneous-1)
 - [React](#react)
   - [Component Types](#component-types)
@@ -910,6 +911,45 @@ if (!isSomeElementValid) {
   // ...
 }
 ```
+
+### Comments
+
+**Don't comment anything that is already obvious in your code.**
+
+The following is an example of how **NOT** to comment:
+
+```js
+// Hook
+function useLocalStorage(key, initialValue) {
+  // State to store our value
+  // Pass initial state function to useState so logic is only executed once
+  const [storedValue, setStoredValue] = useState(() => {
+    try {
+      // Get from local storage by key
+      const item = window.localStorage.getItem(key);
+      // Parse stored json or if none return initialValue
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      // If error also return initialValue
+      console.log(error);
+      return initialValue;
+    }
+  });
+```
+
+None of the comments shown above provide any additional information to the given code - all of that information can be inferred from the code. In comaprison, the following is an example of a good comment:
+
+```js
+module.exports = {
+  env: {
+    browser: true,
+    es6: true, // gets Promise working
+    jest: true,
+    node: true
+  },
+```
+
+In comparison, the one comment here for `es6: true` tells us what we otherwise could not have inferred. This above snippet is from a `.eslintrc.js` file, and `es6: true` does more than just get `Promise` working - however, we're writing this comment to explain why this is being done in this particular case; that is, to get `Promise` working.
 
 ### Miscellaneous
 
