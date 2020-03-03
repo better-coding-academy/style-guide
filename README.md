@@ -43,6 +43,7 @@ Having a consistent coding style across your projects is one of the easiest ways
   - [Miscellaneous](#miscellaneous-1)
 - [React](#react)
   - [Component Types](#component-types)
+  - [Props](#props)
 - [Performance](#performance)
 
 ## General Rules
@@ -1020,6 +1021,62 @@ This is a good compromise to semantically show that `SQUARE_DEFAULT_LEFT` and `S
 
 1. [Error boundaries that use `componentDidCatch`](https://reactjs.org/docs/error-boundaries.html); and
 2. Components that **need** a class-based structure to work properly / be properly optimised. Expanding upon this, this does **not** mean that you get to arbitrarily decide when to use class-based components based on a "gut feeling" - you **must** look at hard data for evidence that using a class-based component provides a statistically significant optimisation benefit. See [Performance](#performance) below.
+
+### Props
+
+**All props sholud be in alphabetical order.**
+
+```jsx
+// good
+<input name="email" placeholder="e.g. lucas@example.com" required type="email" />
+
+// bad
+<input type="email" required name="email" placeholder="e.g. lucas@example.com" />
+```
+
+**Event handler props should be named in the convention of `onAction`.**
+
+```jsx
+// good
+<CreateAccount
+  onCreate={() => {
+    // ...
+  }}
+  onUpdate={() => {
+    // ...
+  }}
+/>
+
+// bad
+<CreateAccount
+  create={() => {
+    // ...
+  }}
+  updated={() => {
+    // ...
+  }}
+/>
+```
+
+**Why?** React does this with all of its built-in events. It is important to discern between normal props and event handler props, so we might as well follow React's convention.
+
+**When accessing event handler props inside your component, they should be remapped to use the word "push".**
+
+```jsx
+// good
+const CreateAccount = ({ onCreate: pushCreate, onUpdate: pushUpdate }) => {
+  // later on...
+  pushCreate({ ... });
+}
+
+// bad
+const CreateAccount = ({ onCreate, onUpdate }) => {
+  // later on...
+  onCreate({ ... });
+}
+```
+
+**Why?** A function called `onEventName` doesn't make much sense - `pushEventName` makes a lot more sense.
 
 ## Performance
 
