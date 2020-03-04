@@ -44,6 +44,7 @@ Having a consistent coding style across your projects is one of the easiest ways
 - [React](#react)
   - [Component Types](#component-types)
   - [Props](#props)
+  - [Architecture](#architecture)
 - [Performance](#performance)
 
 ## General Rules
@@ -1024,7 +1025,7 @@ This is a good compromise to semantically show that `SQUARE_DEFAULT_LEFT` and `S
 
 ### Props
 
-**All props sholud be in alphabetical order.**
+**All props should be in alphabetical order.**
 
 ```jsx
 // good
@@ -1077,6 +1078,126 @@ const CreateAccount = ({ onCreate, onUpdate }) => {
 ```
 
 **Why?** A function called `onEventName` doesn't make much sense - `pushEventName` makes a lot more sense.
+
+### Architecture
+
+**When deciding between hooks, render props and higher-order components, always go with hooks wherever possible.**
+
+```jsx
+// #1
+const MyComponent = () => {
+  const mousePosition = useMouse();
+
+  // mousePosition.x, mousePosition.y
+}
+
+// #2
+const MyComponent = () => {
+  return (
+    <Mouse>
+      {({ x, y }) => {
+        // ...
+      }}
+    </Mouse>
+  )
+}
+
+// #3
+const MyComponent = ({ x, y }) => {
+  // ...
+}
+
+export default withMouse(MyComponent);
+```
+
+**Why?** Well, let's start with higher-order components.
+
+Higher order components are bad for two main reasons:
+
+1. **They take up a fixed prop name, possibly removing other props.** For example, imagine for above example #3 we want to include an `x` and `y` prop on the component:
+
+    ```jsx
+    <MyComponent x="some value" y="some other value" />
+    ```
+
+    Both of these values will be overwritten by the values coming from the higher order component. This issue can also arise when you wish to use multiple higher order components:
+
+    ```jsx
+    export default withMouse(withPage(MyComponent)); // if withMouse and withPage set the same props, there will be clashing issues
+    ```
+
+2. **They do not clearly identify the source of your data.** `withMouse(MyComponent)` does not tell you which props are being included onto the component (if any), hence increasing the amount of time spent debugging and fixing up the code.
+
+Okay then, now let's look at **render props**. Because render props give you data within a function parameter, you can freely rename it however you like. For example:
+
+```jsx
+<Mouse>
+  {({ x, y }) => (
+    <Page>
+      {({ x: pageX, y: pageY }) => {
+        // ^ big brain
+      }}
+    </Page>
+  )}
+</Mouse>
+```
+
+However, render props still have their own issues:
+
+1. **They don't allow you to use their data outside of the `return` statement.** With the example above, you can't use the `x` and `y` values in any state variables, `useEffect` hooks, or any other functions within your component, because it's only accessible within the `return` statement.
+2. **They get nested... really quickly.** Imagine we have three render prop components within a given component:
+
+    ```jsx
+    const MyComponent = () => {
+      return (
+        <Mouse>
+          {({ x, y }) => (
+            <Page>
+              {({ x: pageX, y: pageY }) => (
+                <Connection>
+                  {({ api }) => {
+                    // yikes
+                  }}
+                </Connection>
+              )}
+            </Page>
+          )}
+        </Mouse>
+      )
+    };
+    ```
+
+So now, onto the final (and best) solution!
+
+Hooks address all of the above issues.
+
+1. **Hooks don't have any fixed prop names** - you can rename however you like:
+
+    ```jsx
+    const { x, y } = useMouse();
+    const { x: pageX, y: pageY } = usePage();
+    ```
+
+2. **Hooks clearly identify the source of the data** - in the example above, it's clear that `x` and `y` come from `useMouse`, and `pageX` and `pageY` come from `usePage`.
+3. **Hooks allow you to access data outside of the `return` statement.** For example, you can do stuff like:
+
+    ```jsx
+    const { x: pageX, y: pageY } = usePage();
+
+    useEffect(() => {
+      // this runs whenever pageX or pageY changes
+    }, [pageX, pageY]);
+    ```
+
+4. **Hooks don't get nested at all.** With the above render prop monstrosity rewritten using hooks, the code would look something like:
+
+    ```jsx
+    const { x, y } = useMouse();
+    const { x: pageX, y: pageY } = usePage();
+    const { api } = useConnection();
+    ```
+
+    Three lines of beautiful code.
 
 ## Performance
 
