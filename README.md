@@ -483,7 +483,7 @@ input.addEventListener("keydown", function (evt) {
 
 // bad
 function add(num1, num2) {
-  return nume + num2;
+  return num1 + num2;
 }
 
 async function handleSubmit({ name }) {
