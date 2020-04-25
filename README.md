@@ -38,6 +38,7 @@ Having a consistent coding style across your projects is one of the easiest ways
   - [Spacing](#spacing)
   - [Loops](#loops)
   - [Switch Statements](#switch-statements)
+  - [Imports](#imports)
   - [DOM Operations](#dom-operations)
   - [Comments](#comments)
   - [Miscellaneous](#miscellaneous-1)
@@ -834,6 +835,59 @@ if (status === "GO") {
 ```
 
 **Are there cases in which using a switch statement is appropriate?** Sure! Well, maybe... I don't know. At the lowest level it's a matter of personal preference; however, hopefully you can see why I do not advocate its widespread use.
+
+### Imports
+
+There is a strict order that you should follow for all of your imports. Refer to the following:
+
+```js
+import { rgba } from "polished";
+import React from "react";
+import { Route, Switch } from "react-router-dom";
+import styled from "styled-components";
+
+import TestFramework from "#test/TestFramework";
+import ContentTitle from "$shared/components/layout/ContentTitleSC";
+import InlineHorizontalNavigation, { Item } from "$shared/components/layout/InlineHorizontalNavigation";
+import ResponsiveContainer from "$shared/components/layout/ResponsiveContainerSC";
+import BasicLoader from "$shared/components/loaders/BasicLoader";
+
+import validateBusiness from "./_validateBusiness";
+import PersonInformation from "./PersonInformation";
+import SubmitAction from "./SubmitAction";
+```
+
+Let's talk about the rules that are being enforced here:
+
+1. **There are a maximum of three import groups**. The first group of imports are **global**, the second are **aliased**, and the third are **relative**. Global imports are sourced from `node_modules`, aliased imports are aliased to a local directory, and relative imports are imported relative to the current file (notice how they start with `./`).
+2. **In each import group, imports are ordered alphabetically**. Let's first look at the top import group:
+
+    ```js
+    import { rgba } from "polished";
+    import React from "react";
+    import { Route, Switch } from "react-router-dom";
+    import styled from "styled-components";
+    ```
+
+    Notice how `polished` is first (`polished` starts with `p`), and then `react`, then `react-router-dom`, then `styled-components`. Let's now look at the second group:
+
+    ```js
+    import TestFramework from "#test/TestFramework";
+    import ContentTitle from "$shared/components/layout/ContentTitleSC";
+    import InlineHorizontalNavigation, { Item } from "$shared/components/layout/InlineHorizontalNavigation";
+    import ResponsiveContainer from "$shared/components/layout/ResponsiveContainerSC";
+    import BasicLoader from "$shared/components/loaders/BasicLoader";
+    ```
+
+    Notice how `#test/TestFramework` comes first - the first character is a `#`, which comes before `$` (`#` has a character code of 35, `$` has a character code of 36). This is the same alphabetical principle we use for the first section as well. Let's now look at the last section:
+
+    ```js
+    import validateBusiness from "./_validateBusiness";
+    import PersonInformation from "./PersonInformation";
+    import SubmitAction from "./SubmitAction";
+    ```
+
+    `./_validateBusiness` comes first because of the underscore.
 
 ### DOM Operations
 
