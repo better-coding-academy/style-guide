@@ -930,7 +930,7 @@ preTag.innerText = preTagContents; // and write it into the DOM! (a single DOM u
 headingEl.style.fontSize = `${parseInt(headingEl.style.fontSize) + 1}px`;
 ```
 
-**Why?** Disregarding whether this works or not (and in some't cases it won't work) this is an anti-pattern because we're depending on data that is stored within the DOM.
+**Why?** Disregarding whether this works or not (and in some cases it won't work) this is an anti-pattern because we're depending on data that is stored within the DOM.
 
 Instead, do something like:
 
