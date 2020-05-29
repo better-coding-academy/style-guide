@@ -610,7 +610,7 @@ This has three main benefits:
     });
     ```
 
-    Yes, it is longer; however, look at all the additional information that is now available. No need to remember the order of parameters, and that is a huge deal. It might take 20% longer to type the first time round, but each time a change is made, the reduction in amiguity will save much more than the original 20% cost.
+    Yes, it is longer; however, look at all the additional information that is now available. No need to remember the order of parameters, and that is a huge deal. It might take 20% longer to type the first time round, but each time a change is made, the reduction in ambiguity will save much more than the original 20% cost.
 
 **Do not mutate function arguments.** Instead, if the argument is a primitive, consider storing its value in a new object; if the argument is an object (including arrays), consider spreading it or otherwise creating a new copy.
 
