@@ -543,7 +543,7 @@ This has three main benefits:
     ```
 
 2. **It removes the ambiguity of ordering.** In the first example, there is no real reason to use the order `id, name, email, address` as opposed to, say, `id, name, address, email`, or any other combination really. When using an object and destructuring it, it is easier than remembering an arbitrary order.
-3. **It gives each "argument" a name.** Obviously in the second example we only have one argument (an object); however, each one of those properties has a name, which adds incredible semantics into your funciton. Look at the difference between these two:
+3. **It gives each "argument" a name.** Obviously in the second example we only have one argument (an object); however, each one of those properties has a name, which adds incredible semantics into your function. Look at the difference between these two:
 
     ```php
     // actual PHP code... yikes
